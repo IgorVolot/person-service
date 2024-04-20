@@ -21,4 +21,5 @@ public class Person {
     @Setter
     @Embedded
     Address address;
+
 }
