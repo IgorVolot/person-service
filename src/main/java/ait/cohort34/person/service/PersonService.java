@@ -3,7 +3,6 @@ package ait.cohort34.person.service;
 import ait.cohort34.person.dto.AddressDto;
 import ait.cohort34.person.dto.PersonDto;
 
-import java.util.List;
 import java.util.Map;
 
 public interface PersonService {
@@ -11,17 +10,17 @@ public interface PersonService {
 
     PersonDto findPersonById(Integer id);
 
-    List<PersonDto> findPersonsByCity(String city);
+    Iterable<PersonDto> findPersonsByCity(String city);
 
-    List<PersonDto> findPersonsByAge(Integer age);
+    Iterable<PersonDto> findPersonsByAges(Integer age1, Integer age2);
 
     PersonDto updatePersonName(Integer id, String name);
 
-    List<PersonDto> findPersonsByName(String name);
+    Iterable<PersonDto> findPersonsByName(String name);
 
-    List<Map<String, Long>> getCityPopulation(String city);
+    Iterable<Map<String, Long>> getCityPopulation(String city);
 
-    PersonDto updateAddress(AddressDto addressDto);
+    PersonDto updateAddress(Integer id, AddressDto addressDto);
 
     PersonDto deletePerson(Integer id);
 }

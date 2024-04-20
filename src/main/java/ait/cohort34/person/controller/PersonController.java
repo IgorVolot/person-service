@@ -26,12 +26,13 @@ public class PersonController {
     }
 
     @GetMapping("/city/{city}")
-    public List<PersonDto> findPersonsByCity(@PathVariable String city) {
+    public Iterable<PersonDto> findPersonsByCity(@PathVariable String city) {
         return personService.findPersonsByCity(city);
     }
-    @GetMapping("/ages/{age}")
-    public List<PersonDto> findPersonsByAge(@PathVariable int age) {
-        return personService.findPersonsByAge(age);
+
+    @GetMapping("/ages/{age1}/{age2}")
+    public Iterable<PersonDto> findPersonsByAges(@PathVariable int age1, @PathVariable int age2) {
+        return personService.findPersonsByAges(age1, age2);
     }
 
     @PutMapping("/{id}/name/{name}")
@@ -40,18 +41,18 @@ public class PersonController {
     }
 
     @GetMapping("/name/{name}")
-    public List<PersonDto> findPersonsByName(@RequestParam String name) {
+    public Iterable<PersonDto> findPersonsByName(@PathVariable String name) {
         return personService.findPersonsByName(name);
     }
 
     @GetMapping("/population/city")
-    public List<Map<String, Long>> getCityPopulation(@PathVariable String city, @RequestBody Long population) {
+    public Iterable<Map<String, Long>> getCityPopulation(@PathVariable String city, @RequestBody Long population) {
         return personService.getCityPopulation(city);
     }
 
     @PutMapping("/{id}/address")
     public PersonDto updateAddress(@RequestBody AddressDto addressDto, @PathVariable Integer id) {
-        return personService.updateAddress(addressDto);
+        return personService.updateAddress(id, addressDto);
     }
 
     @DeleteMapping("/{id}")

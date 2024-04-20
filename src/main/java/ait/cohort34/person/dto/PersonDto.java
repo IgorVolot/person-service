@@ -10,11 +10,4 @@ public class PersonDto {
     String name;
     LocalDate birthDate;
     AddressDto address;
-
-    public int getAge(){
-        if(birthDate!=null)
-            return Period.between(birthDate, LocalDate.now()).getYears();
-        else
-            return 0;
-    }
 }

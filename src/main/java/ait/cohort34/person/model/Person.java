@@ -5,7 +5,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.*;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.Period;
+import java.time.Year;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,5 +24,14 @@ public class Person {
     @Setter
     @Embedded
     Address address;
+
+    private Integer age;
+
+    public int getAge() {
+        if ( birthDate != null ) {
+            return Period.between(birthDate, LocalDate.now()).getYears();
+        } else
+            throw new IllegalStateException("Check birthDate settings");
+    }
 
 }
