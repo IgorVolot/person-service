@@ -46,7 +46,7 @@ public class PersonController {
     }
 
     @GetMapping("/population/city")
-    public Iterable<Map<String, Long>> getCityPopulation(@PathVariable String city, @RequestBody Long population) {
+    public Iterable<Map<String, Long>> getCityPopulation(@PathVariable String city) {
         return personService.getCityPopulation(city);
     }
 

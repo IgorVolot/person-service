@@ -25,13 +25,10 @@ public class Person {
     @Embedded
     Address address;
 
-    private Integer age;
-
     public int getAge() {
         if ( birthDate != null ) {
             return Period.between(birthDate, LocalDate.now()).getYears();
         } else
             throw new IllegalStateException("Check birthDate settings");
     }
-
 }
