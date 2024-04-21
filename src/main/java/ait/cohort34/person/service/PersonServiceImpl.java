@@ -2,6 +2,7 @@ package ait.cohort34.person.service;
 
 import ait.cohort34.person.dao.PersonRepository;
 import ait.cohort34.person.dto.AddressDto;
+import ait.cohort34.person.dto.CityPopulationDto;
 import ait.cohort34.person.dto.PersonDto;
 import ait.cohort34.person.dto.exceptions.PersonNotFoundException;
 import ait.cohort34.person.model.Address;
@@ -11,11 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Period;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -82,10 +79,11 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public Iterable<Map<String, Long>> getCityPopulation(String city) {
-        //TODO
-        return List.of();
+    public CityPopulationDto getCityPopulation(String city) {
+        Long population = personRepository.findAllByAddressCity(city).count();
+        return new CityPopulationDto(city, population);
     }
+
 
     @Override
     public PersonDto updateAddress(Integer id, AddressDto addressDto) {
@@ -101,6 +99,4 @@ public class PersonServiceImpl implements PersonService {
         personRepository.delete(person);
         return modelMapper.map(person, PersonDto.class);
     }
-
-
 }

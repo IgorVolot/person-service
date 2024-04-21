@@ -1,6 +1,7 @@
 package ait.cohort34.person.service;
 
 import ait.cohort34.person.dto.AddressDto;
+import ait.cohort34.person.dto.CityPopulationDto;
 import ait.cohort34.person.dto.PersonDto;
 
 import java.util.Map;
@@ -18,7 +19,7 @@ public interface PersonService {
 
     Iterable<PersonDto> findPersonsByName(String name);
 
-    Iterable<Map<String, Long>> getCityPopulation(String city);
+    CityPopulationDto getCityPopulation(String city);
 
     PersonDto updateAddress(Integer id, AddressDto addressDto);
 

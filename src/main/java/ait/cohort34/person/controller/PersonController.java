@@ -1,6 +1,7 @@
 package ait.cohort34.person.controller;
 
 import ait.cohort34.person.dto.AddressDto;
+import ait.cohort34.person.dto.CityPopulationDto;
 import ait.cohort34.person.dto.PersonDto;
 import ait.cohort34.person.service.PersonService;
 import lombok.RequiredArgsConstructor;
@@ -45,8 +46,8 @@ public class PersonController {
         return personService.findPersonsByName(name);
     }
 
-    @GetMapping("/population/city")
-    public Iterable<Map<String, Long>> getCityPopulation(@PathVariable String city) {
+    @GetMapping("/population/city/{city}")
+    public CityPopulationDto getCityPopulation(@PathVariable String city) {
         return personService.getCityPopulation(city);
     }
 
