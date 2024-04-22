@@ -1,9 +1,7 @@
 package ait.cohort34.person.service;
 
 import ait.cohort34.person.dao.PersonRepository;
-import ait.cohort34.person.dto.AddressDto;
-import ait.cohort34.person.dto.CityPopulationDto;
-import ait.cohort34.person.dto.PersonDto;
+import ait.cohort34.person.dto.*;
 import ait.cohort34.person.dto.exceptions.PersonNotFoundException;
 import ait.cohort34.person.model.Address;
 import ait.cohort34.person.model.Child;
@@ -16,8 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -98,6 +94,20 @@ public class PersonServiceImpl implements PersonService, CommandLineRunner {
     @Override
     public Iterable<CityPopulationDto> getCitiesPopulation() {
         return personRepository.getCityPopulation();
+    }
+
+    @Override
+    public EmployeeDto[] findEmployeesBySalary(Double min, Double max) {
+        return personRepository.findEmployeesBySalary(min, max)
+                .map(employee -> modelMapper.map(employee, EmployeeDto.class))
+                .toArray(EmployeeDto[]::new);
+    }
+
+    @Override
+    public ChildDto[] findAllChildren() {
+        return personRepository.findAllChildren()
+                .map(child -> modelMapper.map(child, ChildDto.class))
+                .toArray(ChildDto[]::new);
     }
 
     @Transactional
