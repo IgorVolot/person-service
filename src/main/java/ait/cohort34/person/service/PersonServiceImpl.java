@@ -6,26 +6,30 @@ import ait.cohort34.person.dto.CityPopulationDto;
 import ait.cohort34.person.dto.PersonDto;
 import ait.cohort34.person.dto.exceptions.PersonNotFoundException;
 import ait.cohort34.person.model.Address;
+import ait.cohort34.person.model.Child;
+import ait.cohort34.person.model.Employee;
 import ait.cohort34.person.model.Person;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = false) // to have ability to save changed items in SQL table
-public class PersonServiceImpl implements PersonService {
+public class PersonServiceImpl implements PersonService, CommandLineRunner {
 
     final PersonRepository personRepository;
     final ModelMapper modelMapper;
 
+    @Transactional
     @Override
     public Boolean addPerson(PersonDto personDto) {
-        if ( personRepository.existsById(personDto.getId()) ) {
+        if(personRepository.existsById(personDto.getId())){
             return false;
         }
         personRepository.save(modelMapper.map(personDto, Person.class));
@@ -38,65 +42,77 @@ public class PersonServiceImpl implements PersonService {
         return modelMapper.map(person, PersonDto.class);
     }
 
+    @Transactional
     @Override
-    public Iterable<PersonDto> findPersonsByCity(String city) {
-        if ( city == null || city.isEmpty() ) {
-            return Collections.emptyList();
-        }
-        return personRepository.findAllByAddressCity(city)
-                .map(person -> modelMapper.map(person, PersonDto.class))
-                .collect(Collectors.toList());
+    public PersonDto removePerson(Integer id) {
+        Person person = personRepository.findById(id).orElseThrow(PersonNotFoundException::new);
+        personRepository.delete(person);
+        return modelMapper.map(person, PersonDto.class);
+
     }
 
-    @Override
-    public Iterable<PersonDto> findPersonsByAges(Integer age1, Integer age2) {
-        if ( age1 == null || age2 == null ) {
-            return Collections.emptyList();
-        } else {
-            return personRepository.findAll().stream()
-                    .filter(person -> person.getAge() >= age1 && person.getAge() < age2)
-                    .map(person -> modelMapper.map(person, PersonDto.class))
-                    .collect(Collectors.toList());
-        }
-    }
-
+    @Transactional
     @Override
     public PersonDto updatePersonName(Integer id, String name) {
         Person person = personRepository.findById(id).orElseThrow(PersonNotFoundException::new);
         person.setName(name);
-        personRepository.save(person);
+//        personRepository.save(person);
         return modelMapper.map(person, PersonDto.class);
     }
 
+    @Transactional
     @Override
-    public Iterable<PersonDto> findPersonsByName(String name) {
-        if ( name == null || name.isEmpty() ) {
-            return Collections.emptyList();
-        }
-        return personRepository.findAllByNameIgnoreCase(name)
-                .map(person -> modelMapper.map(person, PersonDto.class))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public CityPopulationDto getCityPopulation(String city) {
-        Long population = personRepository.findAllByAddressCity(city).count();
-        return new CityPopulationDto(city, population);
-    }
-
-
-    @Override
-    public PersonDto updateAddress(Integer id, AddressDto addressDto) {
+    public PersonDto updatePersonAddress(Integer id, AddressDto addressDto) {
         Person person = personRepository.findById(id).orElseThrow(PersonNotFoundException::new);
         person.setAddress(modelMapper.map(addressDto, Address.class));
-        personRepository.save(person);
+//        personRepository.save(person);
         return modelMapper.map(person, PersonDto.class);
     }
 
+    @Transactional(readOnly = true)
     @Override
-    public PersonDto deletePerson(Integer id) {
-        Person person = personRepository.findById(id).orElseThrow(PersonNotFoundException::new);
-        personRepository.delete(person);
-        return modelMapper.map(person, PersonDto.class);
+    public PersonDto[] findPersonsByCity(String city) {
+        return personRepository.findByAddressCityIgnoreCase(city)
+                .map(person -> modelMapper.map(person, PersonDto.class))
+                .toArray(PersonDto[]::new);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public PersonDto[] findPersonsByName(String name) {
+        return personRepository.findByNameIgnoreCase(name)
+                .map(person -> modelMapper.map(person, PersonDto.class))
+                .toArray(PersonDto[]::new);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public PersonDto[] findPersonsBetweenAge(Integer minAge, Integer maxAge) {
+        LocalDate from = LocalDate.now().minusYears(maxAge);
+        LocalDate to = LocalDate.now().minusYears(minAge);
+        return personRepository.findByBirthDateBetween(from, to)
+                .map(person -> modelMapper.map(person, PersonDto.class))
+                .toArray(PersonDto[]::new);
+    }
+
+    @Override
+    public Iterable<CityPopulationDto> getCitiesPopulation() {
+        return personRepository.getCityPopulation();
+    }
+
+    @Transactional
+    @Override
+    public void run(String... args) throws Exception {
+        if ( personRepository.count() == 0 ){
+            Person person = new Person(1000, "John", LocalDate.of(1985, 3, 11),
+                    new Address("Berlin", "Purim", 18));
+            Child child = new Child(2000, "Karl", LocalDate.of(2018, 3, 11),
+                    new Address("Hamburg", "HauptStrasse", 5), "Sunny");
+            Employee employee = new Employee(3000, "Marry", LocalDate.of(1995, 11, 23),
+                    new Address("Bremen", "PappelStrasse", 28), "Motorola", 4500);
+            personRepository.save(person);
+            personRepository.save(child);
+            personRepository.save(employee);
+        }
     }
 }

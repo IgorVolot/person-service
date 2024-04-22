@@ -7,13 +7,11 @@ import ait.cohort34.person.service.PersonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
-
 @RestController
 @RequestMapping("/person")
 @RequiredArgsConstructor
 public class PersonController {
+
     final PersonService personService;
 
     @PostMapping
@@ -26,14 +24,9 @@ public class PersonController {
         return personService.findPersonById(id);
     }
 
-    @GetMapping("/city/{city}")
-    public Iterable<PersonDto> findPersonsByCity(@PathVariable String city) {
-        return personService.findPersonsByCity(city);
-    }
-
-    @GetMapping("/ages/{age1}/{age2}")
-    public Iterable<PersonDto> findPersonsByAges(@PathVariable int age1, @PathVariable int age2) {
-        return personService.findPersonsByAges(age1, age2);
+    @DeleteMapping("/{id}")
+    public PersonDto removePerson(@PathVariable Integer id) {
+        return personService.removePerson(id);
     }
 
     @PutMapping("/{id}/name/{name}")
@@ -41,23 +34,28 @@ public class PersonController {
         return personService.updatePersonName(id, name);
     }
 
+    @PutMapping("/{id}/address")
+    public PersonDto updatePersonAddress(@PathVariable Integer id, @RequestBody AddressDto addressDto) {
+        return personService.updatePersonAddress(id, addressDto);
+    }
+
     @GetMapping("/name/{name}")
-    public Iterable<PersonDto> findPersonsByName(@PathVariable String name) {
+    public PersonDto[] findByName(@PathVariable String name) {
         return personService.findPersonsByName(name);
     }
 
-    @GetMapping("/population/city/{city}")
-    public CityPopulationDto getCityPopulation(@PathVariable String city) {
-        return personService.getCityPopulation(city);
+    @GetMapping("/city/{city}")
+    public PersonDto[] findByCity(@PathVariable String city) {
+        return personService.findPersonsByCity(city);
     }
 
-    @PutMapping("/{id}/address")
-    public PersonDto updateAddress(@RequestBody AddressDto addressDto, @PathVariable Integer id) {
-        return personService.updateAddress(id, addressDto);
+    @GetMapping("/ages/{min}/{max}")
+    public PersonDto[] findPersonsBetweenAge(@PathVariable Integer min, @PathVariable Integer max) {
+        return personService.findPersonsBetweenAge(min, max);
     }
 
-    @DeleteMapping("/{id}")
-    public PersonDto deletePerson(@PathVariable Integer id) {
-        return personService.deletePerson(id);
+    @GetMapping("/population/city")
+    public Iterable<CityPopulationDto> getCitiesPopulation() {
+        return personService.getCitiesPopulation();
     }
 }

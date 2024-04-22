@@ -1,8 +1,6 @@
 package ait.cohort34.person.model;
 
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.Instant;
@@ -15,6 +13,8 @@ import java.time.Year;
 @Getter
 @EqualsAndHashCode(of = "id")
 @Entity
+@Table (name = "persons")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Person {
     @Id
     Integer id;
@@ -22,13 +22,6 @@ public class Person {
     String name;
     LocalDate birthDate;
     @Setter
-    @Embedded
+//    @Embedded
     Address address;
-
-    public int getAge() {
-        if ( birthDate != null ) {
-            return Period.between(birthDate, LocalDate.now()).getYears();
-        } else
-            throw new IllegalStateException("Check birthDate settings");
-    }
 }

@@ -4,24 +4,23 @@ import ait.cohort34.person.dto.AddressDto;
 import ait.cohort34.person.dto.CityPopulationDto;
 import ait.cohort34.person.dto.PersonDto;
 
-import java.util.Map;
 
 public interface PersonService {
     Boolean addPerson(PersonDto personDto);
 
     PersonDto findPersonById(Integer id);
 
-    Iterable<PersonDto> findPersonsByCity(String city);
-
-    Iterable<PersonDto> findPersonsByAges(Integer age1, Integer age2);
+    PersonDto removePerson(Integer id);
 
     PersonDto updatePersonName(Integer id, String name);
 
-    Iterable<PersonDto> findPersonsByName(String name);
+    PersonDto updatePersonAddress(Integer id, AddressDto addressDto);
 
-    CityPopulationDto getCityPopulation(String city);
+    PersonDto[] findPersonsByCity(String city);
 
-    PersonDto updateAddress(Integer id, AddressDto addressDto);
+    PersonDto[] findPersonsByName(String name);
 
-    PersonDto deletePerson(Integer id);
+    PersonDto[] findPersonsBetweenAge(Integer minAge, Integer maxAge);
+
+    Iterable<CityPopulationDto> getCitiesPopulation();
 }
