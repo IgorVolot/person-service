@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Stream;
@@ -24,9 +25,7 @@ public interface PersonRepository extends JpaRepository<Person, Integer> {
     @Query("select new ait.cohort34.person.dto.CityPopulationDto(p.address.city, count (p)) from Person p group by p.address.city order by count (p) desc ")
     List<CityPopulationDto> getCityPopulation();
 
-    @Query("")
-    Stream<Child> findAllChildren();
+    Stream<Child> findChildrenBy();
 
-    @Query("")
-    Stream<Employee> findEmployeesBySalary(Double min, Double max);
+    Stream<Employee> findEmployeesBySalaryBetween(int min, int max);
 }

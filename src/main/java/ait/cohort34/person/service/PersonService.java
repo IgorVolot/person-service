@@ -22,7 +22,7 @@ public interface PersonService {
 
     Iterable<CityPopulationDto> getCitiesPopulation();
 
-    EmployeeDto[] findEmployeesBySalary(Double min, Double max);
+    EmployeeDto[] findEmployeesBySalary(Integer min, Integer max);
 
-    ChildDto[] findAllChildren();
+    ChildDto[] getChildren();
 }
